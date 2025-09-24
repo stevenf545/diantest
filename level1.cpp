@@ -16,29 +16,29 @@ public:
 	}
 };
 User user;
-//ÓÃÀ´´æ´¢Ö¸ÁîÊı¾İ
+//ç”¨æ¥å­˜å‚¨æŒ‡ä»¤æ•°æ®
 int insstore[4];
-//Í¼Êé¹İÊı¾İ
+//å›¾ä¹¦é¦†æ•°æ®
 string libbase[7];
-//ÓÃ»§Êı¾İÓ³Éä
+//ç”¨æˆ·æ•°æ®æ˜ å°„
 string namedate[26] = { "A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z" };
-//½«ÈÕÆÚÓëÊı×ÖÓ³Éä
+//å°†æ—¥æœŸä¸æ•°å­—æ˜ å°„
 string weeklist[7] = { "Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday" };
-//Í¼Êé¹İÊı¾İ¶ÁÈ¡
+//å›¾ä¹¦é¦†æ•°æ®è¯»å–
 int dateread()
 {
 	ifstream fin;
 	fin.open("data.txt", ios::in);
 	if (!fin.is_open())
 	{
-		cout << "ÎÄ¼ş´ò¿ªÊ§°Ü" << endl;
+		cout << "æ–‡ä»¶æ‰“å¼€å¤±è´¥" << endl;
 		return 0;
 	}
 	for (int i = 0; i < 7 && getline(fin, libbase[i]); i++) {};
 	fin.close();
 	return 1;
 }
-//Êı¾İ´æ´¢
+//æ•°æ®å­˜å‚¨
 void savedate()
 {
 	ofstream fout;
@@ -49,7 +49,7 @@ void savedate()
 	}
 	fout.close();
 }
-//´òÓ¡×ùÎ»ÏÖ×´
+//æ‰“å°åº§ä½ç°çŠ¶
 void printdate(string *libbase, int day, int floor)
 {
 	int a = (floor - 1) * 16;
@@ -58,7 +58,7 @@ void printdate(string *libbase, int day, int floor)
 		cout << libbase[day - 1].substr(i, 4) << endl;
 	}
 }
-//Clear¹¦ÄÜµÄÊµÏÖ
+//ClearåŠŸèƒ½çš„å®ç°
 void clear()
 {
 	string a = "00000000000000000000000000000000000000000000000000000000000000000000000000000000";
@@ -67,24 +67,24 @@ void clear()
 		libbase[i] = a;
 	}
 }
-//Ô¤Ô¼¹¦ÄÜÊµÏÖ
+//é¢„çº¦åŠŸèƒ½å®ç°
 void reserve(int day, int floor, int hang, int lie)
 {
 	if (user.m_seat[0] != 0)
 	{
-		cout << "Ã¿ÈËÖ»ÄÜÔ¤Ô¼Ò»¸ö×ùÎ»" << endl;
+		cout << "æ¯äººåªèƒ½é¢„çº¦ä¸€ä¸ªåº§ä½" << endl;
 		return;
 	}
 	if (libbase[day - 1][(floor - 1) * 16 + (hang - 1) * 4 + lie - 1] == '1')
 	{
-		cout << "¸ÃÎ»ÖÃÒÑ¾­±»Ô¤Ô¼" << endl;
+		cout << "è¯¥ä½ç½®å·²ç»è¢«é¢„çº¦" << endl;
 		return;
 	}
 	libbase[day - 1][(floor - 1) * 16 + (hang - 1) * 4 + lie - 1] = '1';
 	user.loadseat(day,floor,hang,lie);
 }
 
-//ÅĞ¶ÏÓÃ»§ÊÇ·ñ´æÔÚ
+//åˆ¤æ–­ç”¨æˆ·æ˜¯å¦å­˜åœ¨
 int search(string* a, string b, int len)
 {
 	for (int i = 0; i < len; i++)
@@ -96,7 +96,7 @@ int search(string* a, string b, int len)
 	}
 	return -1;
 }
-//µÇÂ¼º¯Êı£¬·µ»ØµÇÂ¼½á¹û
+//ç™»å½•å‡½æ•°ï¼Œè¿”å›ç™»å½•ç»“æœ
 string tempuser;
 int num_user;
 int login(string name)
@@ -114,12 +114,12 @@ int login(string name)
 		fin.open("userdata.txt");
 		if (!fin.is_open())
 		{
-			cout << "ÓÃ»§ĞÅÏ¢¶ÁÈ¡Ê§°Ü" << endl;
-			cout << "´´½¨Êı¾İ¿âÇëÊäÈë1" << endl;
+			cout << "ç”¨æˆ·ä¿¡æ¯è¯»å–å¤±è´¥" << endl;
+			cout << "åˆ›å»ºæ•°æ®åº“è¯·è¾“å…¥1" << endl;
 			int f;
 			cin >> f;
 			if (f != 1) { return 3; }
-			cout << "ÕıÔÚ´´½¨¿Õ°×ÓÃ»§Êı¾İ¿â" << endl;
+			cout << "æ­£åœ¨åˆ›å»ºç©ºç™½ç”¨æˆ·æ•°æ®åº“" << endl;
 			ofstream fout;
 			fout.open("userdata.txt",ios:: out);
 			fout << "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000";
@@ -137,7 +137,7 @@ int login(string name)
 	}
 	else { return 0; }
 }
-//ÓÃ»§ĞÅÏ¢±£´æ
+//ç”¨æˆ·ä¿¡æ¯ä¿å­˜
 void saveuser()
 {
 	tempuser[num_user] = (char)(user.m_seat[0] + 48);
@@ -148,12 +148,12 @@ void saveuser()
 	fout.open("userdata.txt");
 	fout << tempuser;
 }
-//²é¿´¸öÈËÔ¤Ô¼½á¹ûµÄ¹¦ÄÜ
+//æŸ¥çœ‹ä¸ªäººé¢„çº¦ç»“æœçš„åŠŸèƒ½
 void reservation()
 {
 	if (user.m_seat[0] == 0)
 	{
-		cout << "ÎŞÔ¤Ô¼Î»ÖÃ" << endl;
+		cout << "æ— é¢„çº¦ä½ç½®" << endl;
 		return;
 	}
 	cout << weeklist[user.m_seat[0] - 1] << " floor " << user.m_seat[1] << " seat " << user.m_seat[2] << " " << user.m_seat[3] << endl;
@@ -172,7 +172,7 @@ int searchweek(string a)
 	}
 	return 0;
 }
-//ÅĞ¶ÏÖ¸ÁîÊÇ·ñÎª²é¿´Êı¾İ£¬²¢ÌáÈ¡Ö¸Áî
+//åˆ¤æ–­æŒ‡ä»¤æ˜¯å¦ä¸ºæŸ¥çœ‹æ•°æ®ï¼Œå¹¶æå–æŒ‡ä»¤
 int is_see(string ins)
 {
 	int a = ins.find("Floor");
@@ -187,7 +187,7 @@ int is_see(string ins)
 	}
 	else { return 0; }
 }
-//ÅĞ¶ÏÖ¸ÁîÊÇ·ñÎªÔ¤Ô¼£¬²¢ÌáÈ¡Ö¸Áî
+//åˆ¤æ–­æŒ‡ä»¤æ˜¯å¦ä¸ºé¢„çº¦ï¼Œå¹¶æå–æŒ‡ä»¤
 bool hanglie(int a, int b)
 {
 	if (a >= 1 && a <= 4 && b >= 1 && b <= 4)
@@ -209,10 +209,10 @@ int is_reserve(string ins)
 	int d = (int)ins[temp + 7] - 48;
 	if (ins.substr(0, 7) == "Reserve" && ins.size() >= 31 && ins.size() <= 34 && searchweek(ins.substr(8, a - 9)) && temp && b >= 1 && b <= 5 && hanglie(c, d))
 	{
-		insstore[0] = searchweek(ins.substr(8, a - 9));//ÈÕÆÚ
-		insstore[1] = b;//Â¥²ã
-		insstore[2] = c;//ĞĞ
-		insstore[3] = d;//ÁĞ
+		insstore[0] = searchweek(ins.substr(8, a - 9));//æ—¥æœŸ
+		insstore[1] = b;//æ¥¼å±‚
+		insstore[2] = c;//è¡Œ
+		insstore[3] = d;//åˆ—
 		return 1;
 	}
 	return 0;
@@ -224,8 +224,8 @@ int main()
 	int is_open = dateread();
 	if (!is_open)
 	{
-		cout << "ÎŞ·¨¶ÁÈ¡Êı¾İ" << endl;
-		cout << "´´½¨¿Õ°×Êı¾İ¿âÇëÊäÈë1" << endl;
+		cout << "æ— æ³•è¯»å–æ•°æ®" << endl;
+		cout << "åˆ›å»ºç©ºç™½æ•°æ®åº“è¯·è¾“å…¥1" << endl;
 		int j;
 		cin >> j;
 		if (j == 1)
@@ -246,18 +246,18 @@ int main()
 		else if (ins1 == "Login")
 		{
 			string name;
-			cout << "ÓÃ»§Ãû£º"; cin >> name;
+			cout << "ç”¨æˆ·åï¼š"; cin >> name;
 			cin.ignore();
 			switch (login(name))
 			{
 			case 0:
-				cout << "ÓÃ»§Ãû²»´æÔÚ" << endl; break;
+				cout << "ç”¨æˆ·åä¸å­˜åœ¨" << endl; break;
 			case 1:
 				while (1)
 				{
-					//cout << "m_seatÎª" << user.m_seat[0] << user.m_seat[1] << user.m_seat[2] << user.m_seat[3] << endl;
-					cout << "ÇëÊäÈëÖ¸Áî£º";
-					getline(cin, ins1);//ÒÉÎÊ£ºÎªÊ²Ã´²»ÓÃ¼Óignore
+					//cout << "m_seatä¸º" << user.m_seat[0] << user.m_seat[1] << user.m_seat[2] << user.m_seat[3] << endl;
+					cout << "è¯·è¾“å…¥æŒ‡ä»¤ï¼š";
+					getline(cin, ins1);
 					if (ins1 == "Exit") { goto BEGIN; }
 					else if (ins1 == "Quit") { goto END; }
 					else if (is_see(ins1))
@@ -268,7 +268,7 @@ int main()
 					{
 						reserve(insstore[0], insstore[1], insstore[2], insstore[3]);
 						
-						cout << "m_seatÎª" << user.m_seat[0] << user.m_seat[1] << user.m_seat[2] << user.m_seat[3] << endl;
+						cout << "m_seatä¸º" << user.m_seat[0] << user.m_seat[1] << user.m_seat[2] << user.m_seat[3] << endl;
 						savedate();
 						saveuser();
 					}
@@ -277,13 +277,13 @@ int main()
 					
 						reservation();
 					}
-					else { cout << "ÎŞĞ§Ö¸Áî" << endl; }
+					else { cout << "æ— æ•ˆæŒ‡ä»¤" << endl; }
 				}
 				break;
 			case 2:
 				while (1)
 				{
-					cout << "ÇëÊäÈëÖ¸Áî£º";
+					cout << "è¯·è¾“å…¥æŒ‡ä»¤ï¼š";
 					getline(cin, ins1);
 					if (ins1 == "Exit") { goto BEGIN; }
 					else if (ins1 == "Quit") { goto END; }
@@ -292,16 +292,17 @@ int main()
 						clear();
 						savedate();
 					}
-					else { cout << "ÇëÊäÈëÕıÈ·Ö¸Áî" << endl; }
+					else { cout << "è¯·è¾“å…¥æ­£ç¡®æŒ‡ä»¤" << endl; }
 				}
 			case 3:
-				cout << "ÇëÖØĞÂµÇÂ¼" << endl;
+				cout << "è¯·é‡æ–°ç™»å½•" << endl;
 			}
 			
 		}
-		else { cout << "ÎŞĞ§Ö¸Áî" << endl; }
+		else { cout << "æ— æ•ˆæŒ‡ä»¤" << endl; }
 	}
 	END:
 	system("pause");
 	return 0;
 }
+

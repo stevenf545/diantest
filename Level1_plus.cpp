@@ -8,12 +8,15 @@
 #define HANG 5
 #define LIE 5
 using namespace std;
+
 class Library;
 class User;
 class Admin;
 class Mainmenu;
+
 struct userSeatData { string name = ""; int day= 0; int floor=0; int hang=0; int lie=0; };
 string weeklist[7] = { "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday" };
+
 int is_week(string str)
 {
 	for (int i = 0; i < 7; i++)
@@ -22,6 +25,7 @@ int is_week(string str)
 		else { return 0; }
 	}
 }
+
 class Library
 {
 public:
@@ -97,6 +101,7 @@ public:
 		}
 		fin.close();
 	}
+	void clearall(Library& library, User& user);
 	void readmainnotice()
 	{ }
 	void readusernotice()
@@ -195,6 +200,7 @@ public:
 		{
 			if (password == "admin123")
 			{
+				cout << "Login successfully" << endl;
 				return 2;
 			}
 			cout << "Incorrect password" << endl; return 0;
@@ -321,7 +327,6 @@ public:
 		}
 	}
 };
-
 class Mainmenu 
 {
 public:
@@ -361,8 +366,21 @@ public:
 		cout << "Exit" << endl;
 		cout << "Quit" << endl;
 		cout << "Exit" << endl;
+		cout << "Help" << endl;
+		cout << "-----------------------" << endl;
 	}
 };
+
+//Admin的类外函数
+void Admin::clearall(Library& library, User& user)
+{
+	library.initialdata();
+	library.readdata();
+	user.m_seat.clear();
+	user.other_seat.clear();
+	user.savaseatlog();
+	cout << "All reservation have been cleared" << endl;
+}
 
 void mainload()
 {
@@ -453,6 +471,21 @@ void mainload()
 					}
 					else { cout << "invalid instruction" << endl; }
 				}
+			case 2:
+				mainmenu.showadminins();
+				while(1)
+				{
+					if (cin.peek() == '/n') { cin.ignore(); }
+					getline(cin, ins);
+					istringstream isstr(ins); insdata.clear();
+					while (isstr >> tempins) { insdata.push_back(tempins); }
+					if (insdata.size() == 0) {}
+					else if (ins == "Quit") { user.saveuserdata(); user.savaseatlog(); library.savedata(); return; }
+					else if (ins == "Exit") { user.saveuserdata(); user.savaseatlog(); library.savedata(); goto BEGIN; }
+					else if (ins == "Help") { mainmenu.showadminins(); }
+					else if (ins == "Clear") { admin.clearall(library, user); }
+					else { cout << "invalid instruction" << endl; }
+				}
 			}
 		}
 	}
@@ -460,6 +493,5 @@ void mainload()
 int main()
 {
 	mainload();
-	cin.get();
 	return 0;
 }

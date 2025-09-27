@@ -242,6 +242,13 @@ public:
 		}
 		cout << "Reply sent successfully to " << username << "!" << endl;
 	}
+	void viewUserList(User& user);
+
+	// 重置用户密码
+	void resetUserPassword(User& user, const string& username, const string& newPassword);
+
+	// 查看seatlog文件信息
+	void viewSeatLog();
 };
 class User
 {
@@ -559,6 +566,10 @@ public:
 		cout << "Set [day] Floor [num] as using" << endl;
 		cout << "Seat Layout Compilation Mode" << endl;
 		cout << "Clear -- clear all reservation" << endl;
+		cout << "View User List -- view all users and passwords" << endl;
+		cout << "Reset User Password [username] [newpassword] -- reset user password" << endl;
+		cout << "Reset User Password [username] -- reset to default password" << endl;
+		cout << "View Seat Log -- view all reservation records" << endl;
 		cout << "Exit" << endl;
 		cout << "Quit" << endl;
 		cout << "Help" << endl;
@@ -898,7 +909,52 @@ void Admin::removeReservationsForFloor(int floorNum, User& user)
 
 	cout << "Total reservations removed: " << removedCount << endl;
 }
+void Admin::viewUserList(User& user) {
+	user.readdata(); // 确保读取最新数据
+	cout << "=== User List ===" << endl;
+	cout << "Username\tPassword" << endl;
+	cout << "-------------------" << endl;
+	for (const auto& userPair : user.userdata) {
+		cout << userPair.first << "\t\t" << userPair.second << endl;
+	}
+	cout << "===================" << endl;
+}
 
+// 重置用户密码
+void Admin::resetUserPassword(User& user, const string& username, const string& newPassword) {
+	user.readdata(); // 读取最新用户数据
+	auto it = user.userdata.find(username);
+	if (it != user.userdata.end()) {
+		user.userdata[username] = newPassword;
+		user.saveuserdata();
+		cout << "Password for user '" << username << "' has been reset successfully!" << endl;
+	}
+	else {
+		cout << "User '" << username << "' not found!" << endl;
+	}
+}
+
+// 查看seatlog文件信息
+void Admin::viewSeatLog() {
+	ifstream fin("seatlog.txt");
+	if (!fin.is_open()) {
+		cout << "No seat reservation data found." << endl;
+		return;
+	}
+
+	cout << "=== Seat Reservation Log ===" << endl;
+	cout << "Format: Username Day Floor Row Column" << endl;
+	cout << "----------------------------" << endl;
+
+	string line;
+	while (getline(fin, line)) {
+		if (!line.empty()) {
+			cout << line << endl;
+		}
+	}
+	fin.close();
+	cout << "============================" << endl;
+}
 //User的函数类外定义
 //ai区
 void User::is_cancel(Library& library)
@@ -1107,6 +1163,18 @@ void mainload()
 					else if (ins == "Exit") { user.saveuserdata(); user.savaseatlog(); library.savedata(); goto BEGIN; }
 					else if (ins == "Help") { mainmenu.showadminins(); }
 					else if (ins == "Clear") { admin.clearall(library, user); }
+					else if (ins == "View User List") {
+						admin.viewUserList(user);
+					}
+					else if (insdata.size() == 4 && insdata[0] == "Reset" && insdata[1] == "User" && insdata[2] == "Password") {
+						admin.resetUserPassword(user, insdata[3], "default123"); // 重置为默认密码
+					}
+					else if (insdata.size() == 5 && insdata[0] == "Reset" && insdata[1] == "User" && insdata[2] == "Password") {
+						admin.resetUserPassword(user, insdata[3], insdata[4]); // 重置为指定密码
+					}
+					else if (ins == "View Seat Log") {
+						admin.viewSeatLog();
+					}
 					else if (ins == "Check Feedback") {
 						admin.checkuserfeedback();
 					}

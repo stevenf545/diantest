@@ -85,6 +85,12 @@ public:
 	string mainnotice;
 	string usernotice;
 	vector<string> userfeedback;
+	bool maintenanceMode; 
+	Admin() : maintenanceMode(false)
+	{
+		readMaintenanceMode(); 
+		readMaintenanceMode(); 
+	}
 public:
 	void readuserfeedback()  
 	{
@@ -249,6 +255,51 @@ public:
 
 	// 查看seatlog文件信息
 	void viewSeatLog();
+	void readMaintenanceMode()
+	{
+		ifstream fin("maintenance_mode.txt");
+		if (fin.is_open())
+		{
+			string mode;
+			fin >> mode;
+			maintenanceMode = (mode == "true");
+			fin.close();
+		}
+		else
+		{
+			maintenanceMode = false;
+			saveMaintenanceMode(); // 创建默认文件
+		}
+	}
+
+	void saveMaintenanceMode()
+	{
+		ofstream fout("maintenance_mode.txt");
+		if (fout.is_open())
+		{
+			fout << (maintenanceMode ? "true" : "false");
+			fout.close();
+		}
+	}
+
+	void enableMaintenanceMode()
+	{
+		maintenanceMode = true;
+		saveMaintenanceMode();
+		cout << "Maintenance mode enabled. Users cannot login now." << endl;
+	}
+
+	void disableMaintenanceMode()
+	{
+		maintenanceMode = false;
+		saveMaintenanceMode();
+		cout << "Maintenance mode disabled. Users can login now." << endl;
+	}
+
+	bool isMaintenanceMode() const
+	{
+		return maintenanceMode;
+	}
 };
 class User
 {
@@ -570,6 +621,7 @@ public:
 		cout << "Reset User Password [username] [newpassword] -- reset user password" << endl;
 		cout << "Reset User Password [username] -- reset to default password" << endl;
 		cout << "View Seat Log -- view all reservation records" << endl;
+		cout << "Maintenance On/Off/Status" << endl;
 		cout << "Exit" << endl;
 		cout << "Quit" << endl;
 		cout << "Help" << endl;
@@ -1068,11 +1120,21 @@ void mainload()
 	}
 	while (1) {
 	BEGIN:
+		admin.readMaintenanceMode();
+		if (admin.isMaintenanceMode()) {
+			cout << "=== SYSTEM MAINTENANCE MODE ===" << endl;
+			cout << "User login is currently disabled." << endl;
+			cout << "===============================" << endl;
+		}
 		getline(cin, ins);
 		if (ins == "Quit") { user.saveuserdata(); user.savaseatlog(); library.savedata();  admin.saveUserFeedback(); return; }
 		else if (ins == "Help") { mainmenu.showmainins(); }
 		else if (ins == "Register")
 		{
+			if (admin.isMaintenanceMode()) {
+				cout << "Registration is disabled during maintenance mode." << endl;
+				continue;
+			}
 			cout << "name: "; getline(cin, tempname);
 			cout << "password: "; getline(cin, temppass);
 			if (tempname.find(" ") != -1 || temppass.find(" ") != -1)
@@ -1085,6 +1147,11 @@ void mainload()
 		{
 			cout << "name: "; cin >> tempname;
 			cout << "password: "; cin >> temppass;
+			if (admin.isMaintenanceMode() && tempname != "Admin") {
+				cout << "System is under maintenance. Please try again later." << endl;
+				cin.ignore(); // 清除输入缓冲区
+				continue;
+			}
 			switch (user.login(tempname, temppass))
 			{
 			case 0:break;
@@ -1183,6 +1250,15 @@ void mainload()
 					}
 					else if (ins == "Publish User Notice") {
 						admin.publishusernotice();
+					}
+					else if (ins == "Maintenance On") {
+						admin.enableMaintenanceMode();
+					}
+					else if (ins == "Maintenance Off") {
+						admin.disableMaintenanceMode();
+					}
+					else if (ins == "Maintenance Status") {
+						cout << "Maintenance mode is " << (admin.isMaintenanceMode() ? "ON" : "OFF") << endl;
 					}
 					else if (insdata.size() >= 3 && insdata[0] == "Reply" && insdata[1] == "to") {
 						// 格式：Reply to [index] [message]

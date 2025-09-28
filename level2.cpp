@@ -208,7 +208,7 @@ public:
 		while (iss >> row) {
 			if (row.length() != LIE) return false;
 			for (char c : row) {
-				if (c != '0' && c != '1' && c != '2') return false;
+				if (c != '0' && c != '1' && c != '2' && '*') return false;
 			}
 			rows.push_back(row);
 		}
@@ -581,35 +581,37 @@ public:
 	void showmainins()
 	{
 		cout << "--------------------" << endl;
+		cout << "Login" << endl;
+		cout << "Register" << endl;
 		cout << "Help -- show help" << endl;
 		cout << "Quit -- exit the application" << endl;
 		cout << "Exit -- log off" << endl;
-		cout << "Login" << endl;
-		cout << "Register" << endl;
 		cout << "--------------------" << endl;
 	}
 	void showuserins()
 	{
 		cout << "---------------------" << endl;
-		cout << "Reserve [day] Floor [num] Seat [hang] [lie]" << endl;
 		cout << "Check [day] Floor [num]" << endl;
+		cout << "Reserve [day] Floor [num] Seat [hang] [lie]" << endl;
 		cout << "Cancel [day] Floor [num] Seat [hang] [lie]" << endl;
-		cout << "Reset password" << endl;
 		cout << "Reservation -- check my reservation" << endl;
 		cout << "Check Notes -- check admin messages" << endl;
+		cout << "Feedback -- submit feedback" << endl;
+		cout << "Check Replies -- check admin replies" << endl;
+		cout << "Reset password" << endl;
 		cout << "Quit" << endl;
 		cout << "Exit" << endl;
 		cout << "Help" << endl;
-		cout << "Feedback -- submit feedback" << endl;
-		cout << "Check Replies -- check admin replies" << endl;
 		cout << "---------------------" << endl;
 	}
 	void showadminins()
 	{
 		cout << "-----------------------" << endl;
+		cout << "View User List -- view all users and passwords" << endl;
+		cout << "View Seat Log -- view all reservation records" << endl;
+		cout << "Reset User Password [username] ([newpassword]) -- reset user password" << endl;
 		cout << "Reservefor [username] [day] [floor] Seat [hang] [lie]" << endl;
 		cout << "Cancel [day] Floor [num] Seat [hang] [lie]" << endl;
-		cout << "Check Feedback" << endl;
 		cout << "Send note to [username] [message]" << endl;
 		cout << "Check Feedback -- view user feedback" << endl;
 		cout << "Reply to [index] [message] -- reply to feedback" << endl;
@@ -618,10 +620,6 @@ public:
 		cout << "Set [day] Floor [num] as using" << endl;
 		cout << "Seat Layout Compilation Mode" << endl;
 		cout << "Clear -- clear all reservation" << endl;
-		cout << "View User List -- view all users and passwords" << endl;
-		cout << "Reset User Password [username] [newpassword] -- reset user password" << endl;
-		cout << "Reset User Password [username] -- reset to default password" << endl;
-		cout << "View Seat Log -- view all reservation records" << endl;
 		cout << "Maintenance On/Off/Status" << endl;
 		cout << "Exit" << endl;
 		cout << "Quit" << endl;

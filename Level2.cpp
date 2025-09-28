@@ -383,6 +383,8 @@ public:
 	}
 	int login(string name, string password)//yes
 	{
+		readdata();
+		readseatlog();
 		if (name == "Admin")
 		{
 			if (password == "admin123")

@@ -208,7 +208,7 @@ public:
 		while (iss >> row) {
 			if (row.length() != LIE) return false;
 			for (char c : row) {
-				if (c != '0' && c != '1' && c != '2' && '*') return false;
+				if (c != '0' && c != '1' && c != '2' && c != '*') return false;
 			}
 			rows.push_back(row);
 		}
@@ -432,30 +432,56 @@ public:
 		}
 	}
 	//不读取和保存
-	void reserve(int day,int floor ,int hang,int lie,Library &lib)//yes
-	{ 
+	void reserve(int day, int floor, int hang, int lie, Library& lib)
+	{
+		// 检查座位状态
+		string currentSeatStatus;
+		string tempfloor = lib.libseatdata[day][floor - 1];
+		istringstream isstr(tempfloor);
+		string temphang;
+		for (int i = 1; isstr >> temphang; i++)
+		{
+			if (i == hang) {
+				if (temphang[lie - 1] != '0') {
+					cout << "Sorry, this seat is not available for reservation" << endl;
+					return;
+				}
+			}
+		}
+
 		for (auto it = m_seat.begin(); it != m_seat.end(); ++it)
 		{
-			if (it->day == day) { cout << "Sorry, you already have a reservation on that day" << endl; return; }
+			if (it->day == day) {
+				cout << "Sorry, you already have a reservation on that day" << endl;
+				return;
+			}
 		}
 		for (auto it = other_seat.begin(); it != other_seat.end(); ++it)
 		{
 			if (it->day == day && it->floor == floor && it->hang == hang && it->lie == lie)
 			{
-				cout << "Sorry,this seat has been reseved" << endl; return;
+				cout << "Sorry, this seat has been reserved" << endl;
+				return;
 			}
 		}
-		userSeatData temp = { m_name,day,floor,hang,lie };
+
+		userSeatData temp = { m_name, day, floor, hang, lie };
 		m_seat.push_back(temp);
-		string tempfloor; string temphang;
-		istringstream isstr(lib.libseatdata[day][floor - 1]);
-		for (int i = 1; isstr >> temphang; i++)
+
+		// 更新座位状态为'1'
+		string newfloor;
+		istringstream isstr2(lib.libseatdata[day][floor - 1]);
+		for (int i = 1; isstr2 >> temphang; i++)
 		{
-			if (i == hang) { temphang[lie - 1] = '1'; }
-			if (i != 1) { temphang.insert(0, 1, ' '); }
-			tempfloor += temphang;
+			if (i == hang) {
+				temphang[lie - 1] = '1';
+			}
+			if (i != 1) {
+				temphang.insert(0, 1, ' ');
+			}
+			newfloor += temphang;
 		}
-		lib.libseatdata[day][floor - 1] = tempfloor;
+		lib.libseatdata[day][floor - 1] = newfloor;
 	}
 	void cancel(int day,int floor,int hang,int lie,Library &lib)//yes
 	{ 
@@ -645,6 +671,20 @@ void Admin::reserveForUser(User& user, Library& library, const string& username,
 	user.readdata();
 	user.readseatlog();
 
+	// 检查座位状态是否为'0'
+	string tempfloor = library.libseatdata[day][floor - 1];
+	istringstream isstr(tempfloor);
+	string temphang;
+	for (int i = 1; isstr >> temphang; i++)
+	{
+		if (i == hang) {
+			if (temphang[lie - 1] != '0') {
+				cout << "Sorry, this seat is not available for reservation" << endl;
+				return;
+			}
+		}
+	}
+
 	// 检查座位是否可用
 	for (auto it = user.other_seat.begin(); it != user.other_seat.end(); ++it)
 	{
@@ -660,16 +700,15 @@ void Admin::reserveForUser(User& user, Library& library, const string& username,
 	user.other_seat.push_back(temp);
 
 	// 更新图书馆数据
-	string tempfloor;
-	string temphang;
-	istringstream isstr(library.libseatdata[day][floor - 1]);
-	for (int i = 1; isstr >> temphang; i++)
+	string newfloor;
+	istringstream isstr2(library.libseatdata[day][floor - 1]);
+	for (int i = 1; isstr2 >> temphang; i++)
 	{
 		if (i == hang) { temphang[lie - 1] = '1'; }
 		if (i != 1) { temphang.insert(0, 1, ' '); }
-		tempfloor += temphang;
+		newfloor += temphang;
 	}
-	library.libseatdata[day][floor - 1] = tempfloor;
+	library.libseatdata[day][floor - 1] = newfloor;
 
 	library.savedata();
 	user.savaseatlog();
@@ -1030,11 +1069,11 @@ void User::is_cancel(Library& library)
 			{
 				if (currentHang == seat.hang)
 				{
-					if (seatStr[seat.lie - 1] == '0' || seatStr[seat.lie - 1] == '2' || seatStr[seat.lie - 1] == '*')
-					{
+					// 只有当座位状态不是'1'时才取消（表示座位已被管理员修改）
+					if (seatStr[seat.lie - 1] != '1') {
 						cout << "Your seat of " << weeklist[seat.day] << " floor "
 							<< seat.floor << " seat " << seat.hang << " " << seat.lie
-							<< " has been canceled" << endl;
+							<< " has been canceled by system" << endl;
 						toRemove.push_back(seat);
 					}
 					break;
